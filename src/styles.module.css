@@ -213,6 +213,10 @@ label.light {
     float: right;
 }
 
+.closeButton:hover {
+    cursor: pointer;
+}
+
 .progressWrapper {
     width: 85%;
     margin-top: 2.0em;
