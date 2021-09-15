@@ -16,7 +16,11 @@ import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 
 import styles from "./styles.module.css"
 
-export const VitePay = ({amountDefault,tokenDefault, addressDefault,nodeURL,defaultMemo,paymentTimeout, buttonStyle, failMessage, successMessage , onPaymentSuccess, onPaymentFailure, onPaymentLogs })  => {
+export const VitePay = ({
+  amountDefault="0", tokenDefault="tti_5649544520544f4b454e6e40",
+  addressDefault="vite_10a86218cf37c795ebbdf8a7da643d92e22d860d2b747e049e",
+  nodeURL="wss://buidl.vite.net/gvite/ws", defaultMemo="MTIzYWJjZA", paymentTimeout="900", 
+  buttonStyle, onPaymentSuccess, onPaymentFailure, onPaymentLogs })  => {
 
   const [address, setAddress] = useState(addressDefault);
   const [tokenId, setTokenId] = useState(tokenDefault);
@@ -30,18 +34,18 @@ export const VitePay = ({amountDefault,tokenDefault, addressDefault,nodeURL,defa
   const [open, setOpen] = useState(false);
   // Get account hash on payment
   useEffect(async () => {
-    
-    const event = await newOnroadBlocksByAddr(address,nodeURL);
+
+    const event = await newOnroadBlocksByAddr(address, nodeURL);
     event.on(async (result) => {
       setState(1);
       const hashAddress = result[0].hash;
-      const txInfo = await getHashInfo(hashAddress,nodeURL);
+      const txInfo = await getHashInfo(hashAddress, nodeURL);
       setTransaction(txInfo);
       onPaymentLogs(txInfo);
-      if(validatePayment(txInfo)){
-        setState(2); 
+      if (validatePayment(txInfo)) {
+        setState(2);
         onPaymentSuccess(txInfo);
-      } else { 
+      } else {
         setState(3);
         onPaymentFailure(txInfo);
       }
@@ -55,9 +59,9 @@ export const VitePay = ({amountDefault,tokenDefault, addressDefault,nodeURL,defa
     });
     setOptions(token.tokenInfoList);
 
-    
 
-  },[]);
+
+  }, []);
 
   useEffect(() => {
     if (timer > 0) {
@@ -67,7 +71,7 @@ export const VitePay = ({amountDefault,tokenDefault, addressDefault,nodeURL,defa
     }
   });
 
- 
+
 
   // change QR when variables are changed
   useEffect(async () => {
@@ -86,17 +90,17 @@ export const VitePay = ({amountDefault,tokenDefault, addressDefault,nodeURL,defa
     return valid;
   }
 
- 
+
   return (
-    <div className={styles.App}>    
+    <div className={styles.App}>
       <button style={buttonStyle} className={styles.embed} onClick={() => setOpen(true)}> Pay With VITE </button>
       <ReactModal className={styles.modal} isOpen={open}>
-      <FontAwesomeIcon onClick={() => setOpen(false)} className={styles.closeButton} size="2x" icon={faTimesCircle} />
+        <FontAwesomeIcon onClick={() => setOpen(false)} className={styles.closeButton} size="2x" icon={faTimesCircle} />
 
-    
+
         <form className={styles.vitepay}>
 
-         {state === 0  ? <p>The transaction will expire in {Math.floor(timer / 60)}{":"}{timer - Math.floor(timer / 60) * 60}</p> : <p>Transaction is Complete</p>}
+          {state === 0 ? <p>The transaction will expire in {Math.floor(timer / 60)}{":"}{timer - Math.floor(timer / 60) * 60}</p> : <p>Transaction is Complete</p>}
           <QRCode size="200" className={styles.qrCode} logoImage="/vitelabs-removebg.jpg" value={qr} />
           <ProgressBar state={state} />
           {state === 0 && (
@@ -106,9 +110,9 @@ export const VitePay = ({amountDefault,tokenDefault, addressDefault,nodeURL,defa
             <Transaction transaction={transaction} />
           )}
         </form>
-     
+
       </ReactModal>
-      
+
     </div>
 
   );

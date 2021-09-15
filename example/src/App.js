@@ -37,8 +37,6 @@ const App = () => {
       "marginBottom": "10px",
       "height": "3em"
     }}
-    failMessage="Transaction has failed! Sir"
-    successMessage="Transaction Successful"
     onPaymentSuccess={onTransactionSuccess}
     onPaymentFailure={onTransactionFailure}
     onPaymentLogs={paymentLogs}
