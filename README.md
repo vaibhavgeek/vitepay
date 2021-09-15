@@ -74,7 +74,7 @@ export default App
 | nodeURL | This is the default websockets node url, the default one being, it is used to connect VITE Node. | wss://buidl.vite.net/gvite/ws
 | paymentTimeout | This is timer by which payment will get timed out. It is present in seconds | 900 
 | buttonStyle | Button style Object for "Pay with VITE" button | Example has the default button Class 
-
+| defaultMemo | Default Memo Present in Payment Popup | MTIzYWJjZA
 ## Callback Hooks 
 | Function | Description 
 | --------  | ----------- 
