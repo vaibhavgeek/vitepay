@@ -1,6 +1,14 @@
 
 
 ## How to Use? (Example)
+Install the VitePay package, 
+
+`npm i vitepay.js`
+
+or 
+
+`yarn add vitepay.js`
+
 
 ```jsx
 import React from 'react'
