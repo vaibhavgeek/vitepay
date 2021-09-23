@@ -21,7 +21,12 @@ import { WS_RPC } from '@vite/vitejs-ws';
 
 import styles from "./styles.module.css"
 
-export const TransactionCheck = ({ senderAddress, recipientAddress, amount, memo, tokenId }) => {
+export const TransactionCheck = ({nodeURL = "wss://buidl.vite.net/gvite/ws", 
+senderAddress, 
+recipientAddress, 
+amount, 
+memo, 
+tokenId }) => {
   const [status, setStatus] = useState(false);
 
   useEffect(async () => {
@@ -36,11 +41,9 @@ export const TransactionCheck = ({ senderAddress, recipientAddress, amount, memo
     }
   }, []);
 
-  return (
-    <>
-      {status}
-    </>
-  )
+  return status
+
+
 };
 
 export const VitePay = ({
@@ -67,9 +70,10 @@ export const VitePay = ({
   const [transaction, setTransaction] = useState(null);
   const [timer, setTimer] = useState(parseInt(paymentTimeout));
   const [open, setOpen] = useState(false);
+  const [nodeLink, setNoteLink] = useState(nodeURL);
   // Get account hash on payment
   useEffect(async () => {
-    let WS_service = new WS_RPC(nodeURL);
+    let WS_service = new WS_RPC(nodeLink);
     let provider = new ViteAPI(WS_service);
 
     const event = await newOnroadBlocksByAddr(address, provider);
@@ -104,7 +108,7 @@ export const VitePay = ({
 
 
 
-  }, []);
+  }, [nodeLink]);
 
   useEffect(() => {
     if (timer > 0) {
@@ -147,7 +151,7 @@ export const VitePay = ({
         break;
       }
     }
-    if(status){
+    if (status) {
       setState(2)
     }
     return status;

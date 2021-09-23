@@ -13,7 +13,7 @@ or
 ```jsx
 import React from 'react'
 
-import { VitePay } from 'vitepay.js'
+import { VitePay, TransactionCheck } from 'vitepay.js'
 import 'vitepay.js/dist/index.css'
 
 
@@ -30,33 +30,47 @@ const paymentLogs = (logs) => {
 };
 
 const App = () => {
-  return <VitePay
-    amountDefault="1"
-    tokenDefault="tti_5649544520544f4b454e6e40"
-    addressDefault="vite_10a86218cf37c795ebbdf8a7da643d92e22d860d2b747e049e"
-    nodeURL="wss://buidl.vite.net/gvite/ws"
-    defaultMemo="MTIzYWJjZA"
-    paymentTimeout="900"
-    buttonStyle={{
-      "color": "#FFF",
-      "backgroundColor": "#02298A",
-      "fontSize": "18px",
-      "textAlign": "center",
-      "fontStyle": "normal",
-      "borderRadius": "5px",
-      "width": "200px",
-      "borderWidth": "1px 1px 3px",
-      "boxShadow": "0 -1px 0 rgba(255, 255, 255, 0.1) inset",
-      "marginBottom": "10px",
-      "height": "3em"
-    }}
-    onPaymentSuccess={onTransactionSuccess}
-    onPaymentFailure={onTransactionFailure}
-    onPaymentLogs={paymentLogs}
-  />
+  return (<div>
+
+    <VitePay
+      amountDefault="1"
+      tokenDefault="tti_5649544520544f4b454e6e40"
+      defaultMemo="MTIzYWJjZA"
+      displayToken={true}
+      displayMemo={true}
+      displayAmount={false}
+      addressDefault="vite_10a86218cf37c795ebbdf8a7da643d92e22d860d2b747e049e"
+      nodeURL="wss://buidl.vite.net/gvite/ws"
+      paymentTimeout="900"
+      buttonStyle={{
+        "color": "#FFF",
+        "backgroundColor": "#02298A",
+        "fontSize": "18px",
+        "textAlign": "center",
+        "fontStyle": "normal",
+        "borderRadius": "5px",
+        "width": "200px",
+        "borderWidth": "1px 1px 3px",
+        "boxShadow": "0 -1px 0 rgba(255, 255, 255, 0.1) inset",
+        "marginBottom": "10px",
+        "height": "3em"
+      }}
+      onPaymentSuccess={onTransactionSuccess}
+      onPaymentFailure={onTransactionFailure}
+      onPaymentLogs={paymentLogs}
+    />
+
+    <TransactionCheck
+      nodeURL="wss://buidl.vite.net/gvite/ws"
+      recepientAddress="vite_10a86218cf37c795ebbdf8a7da643d92e22d860d2b747e049e"
+      amount="1"
+      tokenId="tti_5649544520544f4b454e6e40"
+    ></TransactionCheck>
+  </div>)
 }
 
 export default App
+
 
 
 ```
@@ -75,6 +89,10 @@ export default App
 | paymentTimeout | This is timer by which payment will get timed out. It is present in seconds | 900 
 | buttonStyle | Button style Object for "Pay with VITE" button | Example has the default button Class 
 | defaultMemo | Default Memo Present in Payment Popup | MTIzYWJjZA
+| displayToken | Show Token Dropdown in form popup. In case of false, default values will be used.  | `true`
+| displayAmount | Show Amount Input in form popup. In case of false, default values will be used.  | `true`
+| displayMemo | Show Memo Input in form popup. In case of false, default values will be used. | `true`
+
 ## Callback Hooks 
 | Function | Description 
 | --------  | ----------- 
