@@ -7,10 +7,12 @@ import ReactModal from 'react-modal';
 
 import Big from 'big.js';
 
-import { newOnroadBlocksByAddr, getTokenList, getHashInfo } from './components/client';
+import { newOnroadBlocksByAddr, getTokenList, getHashInfo, getTransactionHistory } from './components/client';
 import ProgressBar from "./components/progressBar";
 import Transaction from "./components/transHistory";
 import TransactionForm from "./components/transForm";
+import TransactionStatus from "./components/transactionStatus";
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { ViteAPI } from '@vite/vitejs';
@@ -19,14 +21,36 @@ import { WS_RPC } from '@vite/vitejs-ws';
 
 import styles from "./styles.module.css"
 
+export const TransactionCheck = ({ senderAddress, recipientAddress, amount, memo, tokenId }) => {
+  const [transactions, setTransactions] = useState(null);
+
+  useEffect(async () => {
+
+    let WS_service = new WS_RPC(nodeURL);
+    let provider = new ViteAPI(WS_service);
+    const transactions = await getTransactionHistory(recipientAddress, provider);
+    setTransactions(transactions);
+  }, []);
+  
+  return(
+    {transactions.map(tx => (
+    <TransactionStatus transaction={tx} senderAddress={senderAddress} amount={amount} memo={memo} tokenId={tokenId} />  
+    )});
+};
+
 export const VitePay = ({
   amountDefault="0", tokenDefault="tti_5649544520544f4b454e6e40",
   addressDefault="vite_10a86218cf37c795ebbdf8a7da643d92e22d860d2b747e049e",
-  nodeURL="wss://buidl.vite.net/gvite/ws", defaultMemo="MTIzYWJjZA", paymentTimeout="900", 
+  nodeURL="wss://buidl.vite.net/gvite/ws", 
+  defaultMemo="MTIzYWJjZA", 
+  paymentTimeout="900", 
   displayToken = true,
   displayMemo = true,
   displayAmount = true,
-  buttonStyle, onPaymentSuccess, onPaymentFailure, onPaymentLogs })  => {
+  buttonStyle,
+  onPaymentSuccess, 
+  onPaymentFailure, 
+  onPaymentLogs })  => {
 
   const [address, setAddress] = useState(addressDefault);
   const [tokenId, setTokenId] = useState(tokenDefault);
