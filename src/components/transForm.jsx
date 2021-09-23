@@ -19,7 +19,7 @@ const TransactionForm = ({ tokenId, setTokenId, memo, setMemo, amount, setAmount
     return (
         <div className={styles.form}>
             <label style={{ textAlign: "right" }}>
-                Refresh Status: <button onClick={() => checkStatus(tokenId, memo, amount)}>
+                Refresh Status: <button onClick={(e) => checkStatus(e,tokenId, memo, amount)}>
                     <FontAwesomeIcon size="x" icon={faSync} /></button>
 
             </label>

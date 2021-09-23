@@ -17,12 +17,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { ViteAPI } from '@vite/vitejs';
 import { WS_RPC } from '@vite/vitejs-ws';
+import HTTP_RPC from '@vite/vitejs-http';
 
 
 import styles from "./styles.module.css"
 
-export const TransactionCheck = ({nodeURL = "wss://buidl.vite.net/gvite/ws", 
-senderAddress, 
+export const TransactionCheck = ({nodeURL = "https://buidl.vite.net/gvite/http", 
 recipientAddress, 
 amount, 
 memo, 
@@ -30,11 +30,14 @@ tokenId }) => {
   const [status, setStatus] = useState(false);
 
   useEffect(async () => {
-    let WS_service = new WS_RPC(nodeURL);
-    let provider = new ViteAPI(WS_service);
+    let httpRPC = new HTTP_RPC(nodeURL);
+    let provider = new ViteAPI(httpRPC, () => {
+      return
+    });
+  
     const transactions = await getTransactionHistory(recipientAddress, provider);
     for (var i = 0; i < transactions.length; i++) {
-      if (transactionStatus(transactions[i], senderAddress, amount, memo, tokenId)) {
+      if (transactionStatus(transactions[i], amount, memo, tokenId)) {
         setStatus(true);
         break;
       }
@@ -139,13 +142,15 @@ export const VitePay = ({
     return valid;
   }
 
-  async function checkStatus(tokenId, memo, amount) {
+  async function checkStatus(e,tokenId, memo, amount) {
+    e.preventDefault();
+
     let WS_service = new WS_RPC(nodeURL);
     let provider = new ViteAPI(WS_service);
-    const transactions = await getTransactionHistory(recipientAddress, provider);
+    const transactions = await getTransactionHistory(address, provider);
     const status = false;
     for (var i = 0; i < transactions.length; i++) {
-      if (transactionStatus(transactions[i], address, amount, memo, tokenId)) {
+      if (transactionStatus(transactions[i], amount, memo, tokenId)) {
         status = true;
         setTransaction(transactions[i]);
         break;
