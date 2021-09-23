@@ -62,7 +62,7 @@ export default App
 ```
 
 ## How it Looks? (Video)
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/5tqTfJ1T6oE/0.jpg)](https://www.youtube.com/watch?v=DCgagBe2bKM)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/5tqTfJ1T6oE/0.jpg)](https://www.youtube.com/watch?v=5tqTfJ1T6oE)
 
 
 ## Parameters
