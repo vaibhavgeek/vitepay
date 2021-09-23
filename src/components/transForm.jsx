@@ -1,8 +1,11 @@
 import React from "react";
+import { encode, decode } from 'js-base64';
 
 import styled from '@emotion/styled';
 import Select from 'react-dropdown-select';
 import styles from "./../styles.module.css"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSync } from '@fortawesome/free-solid-svg-icons'
 
 const StyledSelect = styled(Select)`
   .react-dropdown-select-item.react-dropdown-select-item-selected,
@@ -12,10 +15,14 @@ const StyledSelect = styled(Select)`
   }
  
 `;
-const TransactionHistory = ({ tokenId, setTokenId, memo, setMemo, amount, setAmount, options }) => {
+const TransactionForm = ({ tokenId, setTokenId, memo, setMemo, amount, setAmount, options, displayToken, displayMemo, displayAmount, checkStatus }) => {
     return (
         <div className={styles.form}>
-            <label>
+            <label style={{ textAlign: "right" }}>
+            Refresh Status: <button onClick={() => checkStatus()}><FontAwesomeIcon  size="x" icon={faSync} /></button>
+
+            </label>
+            {displayToken && (<label>
                 Token
                 {options.length > 0 ? (
                     <StyledSelect
@@ -26,20 +33,24 @@ const TransactionHistory = ({ tokenId, setTokenId, memo, setMemo, amount, setAmo
                         values={[options.find(opt => opt.tokenId === tokenId)]}
                         onChange={(e) => { setTokenId(e[0].tokenId); }}
                     />
-                ): <p>Loading ....</p>}
+                ) : <p>Loading ....</p>}
 
-            </label>
+            </label>)}
 
-            <label>
+            {displayMemo && (<label>
                 Memo:
-                <input type="text" name="Memo" value={atob(memo)} onChange={(e) => setMemo(btoa(e.target.value))} />
-            </label>
+                <input type="text" name="Memo" value={decode(memo)} onChange={(e) => setMemo(encode(e.target.value))} />
+            </label>)}
 
-            <label>
-                Amount:
-                <input type="text" name="Amount" type="number" value={amount} onChange={(e) => setAmount(e.target.value)} />
-            </label>
+
+            {displayAmount && (
+                <label>
+                    Amount:
+                    <input type="text" name="Amount" type="number" value={amount} onChange={(e) => setAmount(e.target.value)} />
+                </label>
+            )}
+
 
         </div>)
 };
-export default TransactionHistory;
+export default TransactionForm;

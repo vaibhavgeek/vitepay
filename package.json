@@ -1,6 +1,6 @@
 {
     "name": "vitepay.js",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Made with create-react-library",
     "author": "vaibhavgeek",
     "license": "MIT",
@@ -58,6 +58,7 @@
         "@vite/vitejs-http": "^2.3.14",
         "@vite/vitejs-ws": "^2.3.14",
         "big.js": "^6.1.1",
+        "js-base64": "^3.7.2",
         "react-dropdown-select": "^4.7.4",
         "react-modal": "^3.14.3",
         "react-qrcode-logo": "^2.4.0",

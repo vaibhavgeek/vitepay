@@ -20,9 +20,12 @@ const App = () => {
   return <VitePay
     amountDefault="1"
     tokenDefault="tti_5649544520544f4b454e6e40"
+    defaultMemo="MTIzYWJjZA"
+    displayToken={true}
+    displayMemo={true}
+    displayAmount={false}
     addressDefault="vite_10a86218cf37c795ebbdf8a7da643d92e22d860d2b747e049e"
     nodeURL="wss://buidl.vite.net/gvite/ws"
-    defaultMemo="MTIzYWJjZA"
     paymentTimeout="900"
     buttonStyle={{
       "color": "#FFF",
