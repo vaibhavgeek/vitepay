@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { VitePay } from 'vitepay.js'
+import { VitePay, TransactionCheck } from 'vitepay.js'
 import 'vitepay.js/dist/index.css'
 
 
@@ -17,7 +17,9 @@ const paymentLogs = (logs) => {
 };
 
 const App = () => {
-  return <VitePay
+  return (<div> 
+    
+    <VitePay
     amountDefault="1"
     tokenDefault="tti_5649544520544f4b454e6e40"
     defaultMemo="MTIzYWJjZA"
@@ -44,6 +46,9 @@ const App = () => {
     onPaymentFailure={onTransactionFailure}
     onPaymentLogs={paymentLogs}
   />
+  
+  <TransactionCheck></TransactionCheck>
+</div>)
 }
 
 export default App

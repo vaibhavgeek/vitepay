@@ -3,7 +3,7 @@ import styles from "./../styles.module.css"
 import React from "react";
 import { encode, decode } from 'js-base64';
 
-const TransactionHistory = ({ transaction, senderAddress, tokenId, memo, amount}) => {
+const transactionStatus = (transaction, senderAddress, tokenId, memo, amount) => {
     const validated = true;
     let divider = `10e-${transaction.tokenInfo.decimals}`
     let amountTx = (new Big(`${transaction.amount}`)).div(Big(divider));
@@ -16,4 +16,4 @@ const TransactionHistory = ({ transaction, senderAddress, tokenId, memo, amount}
     return validated;
 }
 
-export default TransactionHistory;
+export { transactionStatus };
