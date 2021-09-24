@@ -22,7 +22,7 @@ const App = () => {
     <VitePay
       amountDefault="1"
       tokenDefault="tti_5649544520544f4b454e6e40"
-      defaultMemo="MTIzYWJjZA"
+      defaultMemo="123abcd"
       displayToken={true}
       displayMemo={true}
       displayAmount={false}

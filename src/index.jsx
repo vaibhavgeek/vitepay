@@ -4,6 +4,7 @@ import { QRCode } from 'react-qrcode-logo';
 import React from "react";
 import { useState, useEffect } from "react";
 import ReactModal from 'react-modal';
+import { encode, decode } from 'js-base64';
 
 import Big from 'big.js';
 
@@ -36,6 +37,7 @@ tokenId }) => {
     });
   
     const transactions = await getTransactionHistory(recipientAddress, provider);
+
     for (var i = 0; i < transactions.length; i++) {
       if (transactionStatus(transactions[i], amount, memo, tokenId)) {
         setStatus(true);
@@ -53,7 +55,7 @@ export const VitePay = ({
   amountDefault = "0", tokenDefault = "tti_5649544520544f4b454e6e40",
   addressDefault = "vite_10a86218cf37c795ebbdf8a7da643d92e22d860d2b747e049e",
   nodeURL = "wss://buidl.vite.net/gvite/ws",
-  defaultMemo = "MTIzYWJjZA",
+  defaultMemo = "123abcd",
   paymentTimeout = "900",
   displayToken = true,
   displayMemo = true,
@@ -68,15 +70,15 @@ export const VitePay = ({
   const [memo, setMemo] = useState(defaultMemo);
   const [amount, setAmount] = useState(amountDefault);
   const [options, setOptions] = useState([]);
-  const [qr, setQR] = useState(`vite:${address}?tti=${tokenId}&amount=${amount}&data=${memo}`);
+  const [qr, setQR] = useState(`vite:${address}?tti=${tokenId}&amount=${amount}&data=${encode(memo)}`);
   const [state, setState] = useState(0);
   const [transaction, setTransaction] = useState(null);
   const [timer, setTimer] = useState(parseInt(paymentTimeout));
   const [open, setOpen] = useState(false);
-  const [nodeLink, setNoteLink] = useState(nodeURL);
+
   // Get account hash on payment
   useEffect(async () => {
-    let WS_service = new WS_RPC(nodeLink);
+    let WS_service = new WS_RPC(nodeURL);
     let provider = new ViteAPI(WS_service);
 
     const event = await newOnroadBlocksByAddr(address, provider);
@@ -94,7 +96,7 @@ export const VitePay = ({
         setState(2);
         onPaymentSuccess(txInfo);
       }
-      else if (!validatePayment(txInfo)) {
+      else if (timer < 3) {
         setState(3);
         onPaymentFailure(txInfo);
       }
@@ -111,7 +113,7 @@ export const VitePay = ({
 
 
 
-  }, [nodeLink]);
+  }, []);
 
   useEffect(() => {
     if (timer > 0) {
@@ -125,8 +127,7 @@ export const VitePay = ({
 
   // change QR when variables are changed
   useEffect(async () => {
-    memo.replaceAll("=", "");
-    setQR(`vite:${address}?tti=${tokenId}&amount=${amount}&data=${memo.replaceAll("=", "")}`);
+    setQR(`vite:${address}?tti=${tokenId}&amount=${amount}&data=${encode(memo)}`);
   }, [address, tokenId, memo, amount]);
 
 
@@ -144,22 +145,20 @@ export const VitePay = ({
 
   async function checkStatus(e,tokenId, memo, amount) {
     e.preventDefault();
-
     let WS_service = new WS_RPC(nodeURL);
     let provider = new ViteAPI(WS_service);
+    
     const transactions = await getTransactionHistory(address, provider);
-    const status = false;
+    let statusTransaction = false;
     for (var i = 0; i < transactions.length; i++) {
-      if (transactionStatus(transactions[i], amount, memo, tokenId)) {
-        status = true;
+      if (await transactionStatus(transactions[i], tokenId, memo, amount)) {
+        statusTransaction = true;
         setTransaction(transactions[i]);
+        setState(2);
         break;
       }
     }
-    if (status) {
-      setState(2)
-    }
-    return status;
+    return statusTransaction;
   }
 
   return (

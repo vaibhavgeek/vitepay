@@ -35,7 +35,7 @@ const App = () => {
     <VitePay
       amountDefault="1"
       tokenDefault="tti_5649544520544f4b454e6e40"
-      defaultMemo="MTIzYWJjZA"
+      defaultMemo="abc123"
       displayToken={true}
       displayMemo={true}
       displayAmount={false}
@@ -88,7 +88,7 @@ export default App
 | nodeURL | This is the default websockets node url, the default one being, it is used to connect VITE Node. | wss://buidl.vite.net/gvite/ws
 | paymentTimeout | This is timer by which payment will get timed out. It is present in seconds | 900 
 | buttonStyle | Button style Object for "Pay with VITE" button | Example has the default button Class 
-| defaultMemo | Default Memo Present in Payment Popup | MTIzYWJjZA
+| defaultMemo | Default Memo Present in Payment Popup | 123abcd
 | displayToken | Show Token Dropdown in form popup. In case of false, default values will be used.  | `true`
 | displayAmount | Show Amount Input in form popup. In case of false, default values will be used.  | `true`
 | displayMemo | Show Memo Input in form popup. In case of false, default values will be used. | `true`

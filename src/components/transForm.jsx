@@ -40,7 +40,7 @@ const TransactionForm = ({ tokenId, setTokenId, memo, setMemo, amount, setAmount
 
             {displayMemo && (<label>
                 Memo:
-                <input type="text" name="Memo" value={decode(memo)} onChange={(e) => setMemo(encode(e.target.value))} />
+                <input type="text" name="Memo" value={memo} onChange={(e) => setMemo(e.target.value)} />
             </label>)}
 
 
