@@ -35,7 +35,7 @@ const App = () => {
     <VitePay
       amountDefault="1"
       tokenDefault="tti_5649544520544f4b454e6e40"
-      defaultMemo="abcd123"
+      defaultMemo="123abcd"
       displayToken={true}
       displayMemo={true}
       displayAmount={false}
@@ -61,8 +61,8 @@ const App = () => {
     />
 
     <TransactionCheck
-      nodeURL="wss://buidl.vite.net/gvite/ws"
-      recepientAddress="vite_10a86218cf37c795ebbdf8a7da643d92e22d860d2b747e049e"
+      nodeURL="https://buidl.vite.net/gvite/http"
+      recipientAddress="vite_10a86218cf37c795ebbdf8a7da643d92e22d860d2b747e049e"
       amount="1"
       tokenId="tti_5649544520544f4b454e6e40"
     ></TransactionCheck>
@@ -70,6 +70,7 @@ const App = () => {
 }
 
 export default App
+
 
 
 
