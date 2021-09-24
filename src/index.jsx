@@ -37,7 +37,7 @@ tokenId }) => {
     });
   
     const transactions = await getTransactionHistory(recipientAddress, provider);
-    console.log("check transactions", transactions);
+
     for (var i = 0; i < transactions.length; i++) {
       if (transactionStatus(transactions[i], amount, memo, tokenId)) {
         setStatus(true);
@@ -46,7 +46,8 @@ tokenId }) => {
     }
   }, []);
 
-  return status
+  return status && (<div>Transaction Found</div>);
+
 };
 
 export const VitePay = ({
@@ -108,8 +109,6 @@ export const VitePay = ({
       value.key = index;
     });
     setOptions(token.tokenInfoList);
-
-
 
   }, []);
 
