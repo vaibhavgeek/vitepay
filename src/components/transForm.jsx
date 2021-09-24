@@ -32,7 +32,7 @@ const TransactionForm = ({ tokenId, setTokenId, memo, setMemo, amount, setAmount
                         clearOnSelect={true}
                         options={options}
                         values={[options.find(opt => opt.tokenId === tokenId)]}
-                        onChange={(e) => { setTokenId(e[0].tokenId); }}
+                        onChange={(e) => { setTokenId(e[0]?.tokenId); }}
                     />
                 ) : <p>Loading ....</p>}
 

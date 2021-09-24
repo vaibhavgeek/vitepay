@@ -16,18 +16,18 @@ import { transactionStatus } from "./components/transactionStatus";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
-import { ViteAPI } from '@vite/vitejs';
+import { ViteAPI, accountBlock } from '@vite/vitejs';
 import { WS_RPC } from '@vite/vitejs-ws';
 import HTTP_RPC from '@vite/vitejs-http';
 
 
 import styles from "./styles.module.css"
 
-export const TransactionCheck = ({nodeURL = "https://buidl.vite.net/gvite/http", 
-recipientAddress, 
-amount, 
-memo, 
-tokenId }) => {
+export const TransactionCheck = ({ nodeURL = "https://buidl.vite.net/gvite/http",
+  recipientAddress,
+  amount,
+  memo,
+  tokenId }) => {
   const [status, setStatus] = useState(false);
 
   useEffect(async () => {
@@ -35,7 +35,7 @@ tokenId }) => {
     let provider = new ViteAPI(httpRPC, () => {
       return
     });
-  
+
     const transactions = await getTransactionHistory(recipientAddress, provider);
 
     for (var i = 0; i < transactions.length; i++) {
@@ -88,10 +88,10 @@ export const VitePay = ({
       setTransaction(txInfo);
       onPaymentLogs(txInfo);
 
-      if (await validatePayment(txInfo,memo,amount,tokenId) && txInfo.receiveBlockHeight === null) {
+      if (await validatePayment(txInfo, memo, amount, tokenId) && txInfo.receiveBlockHeight === null) {
         setState(1);
       }
-      else if (await validatePayment(txInfo,memo,amount,tokenId) && txInfo.receiveBlockHeight !== null) {
+      else if (await validatePayment(txInfo, memo, amount, tokenId) && txInfo.receiveBlockHeight !== null) {
         setState(2);
         onPaymentSuccess(txInfo);
       }
@@ -110,7 +110,7 @@ export const VitePay = ({
     });
     setOptions(token.tokenInfoList);
 
-  }, []);
+  }, [memo]);
 
   useEffect(() => {
     if (timer > 0) {
@@ -129,9 +129,9 @@ export const VitePay = ({
 
 
   // make sure if the transaction is valid or not. 
-  async function validatePayment(hashTx,memo,amount,tokenId) {
+  async function validatePayment(hashTx, memo, amount, tokenId) {
     let valid = false;
-    let divider = `10e-${hashTx.tokenInfo.decimals}`
+    let divider = `1e+${hashTx.tokenInfo.decimals}`
     let amountTx = (new Big(`${hashTx.amount}`)).div(Big(divider));
 
     if (hashTx.data == encode(memo) && parseInt(amountTx) == parseInt(amount) && hashTx.tokenId == tokenId) valid = true;
@@ -139,19 +139,21 @@ export const VitePay = ({
     return valid;
   }
 
-  async function checkStatus(e,tokenId, memo, amount) {
+  async function checkStatus(e, tokenId, memo, amount) {
     e.preventDefault();
     let WS_service = new WS_RPC(nodeURL);
     let provider = new ViteAPI(WS_service);
-    
+
     const transactions = await getTransactionHistory(address, provider);
     let statusTransaction = false;
-    for (var i = 0; i < transactions.length; i++) {
-      if (await transactionStatus(transactions[i], tokenId, memo, amount)) {
-        statusTransaction = true;
-        setTransaction(transactions[i]);
-        setState(2);
-        break;
+    if (transactions.length > 0) {
+      for (var i = 0; i < transactions.length; i++) {
+        if (await transactionStatus(transactions[i], tokenId, memo, amount)) {
+          statusTransaction = true;
+          setTransaction(transactions[i]);
+          setState(2);
+          break;
+        }
       }
     }
     return statusTransaction;

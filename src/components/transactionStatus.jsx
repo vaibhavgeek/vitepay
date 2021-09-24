@@ -5,7 +5,7 @@ import { encode, decode } from 'js-base64';
 async function transactionStatus(transaction, tokenId, memo, amount) {
 
     let validated = true;
-    let divider = `10e-${transaction.tokenInfo.decimals}`
+    let divider = `1e+${transaction.tokenInfo.decimals}`
     let amountTx = (new Big(`${transaction.amount}`)).div(Big(divider));
 
     if (tokenId && transaction && transaction.tokenId != tokenId) validated = false;
