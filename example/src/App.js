@@ -48,9 +48,10 @@ const App = () => {
     />
 
     <TransactionCheck
-      nodeURL="wss://buidl.vite.net/gvite/ws"
+      nodeURL="https://buidl.vite.net/gvite/http"
       recepientAddress="vite_10a86218cf37c795ebbdf8a7da643d92e22d860d2b747e049e"
       amount="1"
+      memo="abcd123"
       tokenId="tti_5649544520544f4b454e6e40"
     ></TransactionCheck>
   </div>)

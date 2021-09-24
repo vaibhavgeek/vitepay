@@ -37,7 +37,7 @@ tokenId }) => {
     });
   
     const transactions = await getTransactionHistory(recipientAddress, provider);
-
+    console.log("check transactions", transactions);
     for (var i = 0; i < transactions.length; i++) {
       if (transactionStatus(transactions[i], amount, memo, tokenId)) {
         setStatus(true);
@@ -47,8 +47,6 @@ tokenId }) => {
   }, []);
 
   return status
-
-
 };
 
 export const VitePay = ({
@@ -70,7 +68,7 @@ export const VitePay = ({
   const [memo, setMemo] = useState(defaultMemo);
   const [amount, setAmount] = useState(amountDefault);
   const [options, setOptions] = useState([]);
-  const [qr, setQR] = useState(`vite:${address}?tti=${tokenId}&amount=${amount}&data=${encode(memo)}`);
+  const [qr, setQR] = useState(`vite:${address}?tti=${tokenId}&amount=${amount}&data=${encode(memo).replaceAll("=", "")}`);
   const [state, setState] = useState(0);
   const [transaction, setTransaction] = useState(null);
   const [timer, setTimer] = useState(parseInt(paymentTimeout));
@@ -87,12 +85,12 @@ export const VitePay = ({
       const hashAddress = result[0].hash;
       const txInfo = await getHashInfo(hashAddress, provider);
       setTransaction(txInfo);
+      onPaymentLogs(txInfo);
 
-      if (validatePayment(txInfo) && txInfo.receiveBlockHeight === null) {
+      if (await validatePayment(txInfo,memo,amount,tokenId) && txInfo.receiveBlockHeight === null) {
         setState(1);
-        onPaymentLogs(txInfo);
       }
-      else if (validatePayment(txInfo) && txInfo.receiveBlockHeight !== null) {
+      else if (await validatePayment(txInfo,memo,amount,tokenId) && txInfo.receiveBlockHeight !== null) {
         setState(2);
         onPaymentSuccess(txInfo);
       }
@@ -127,19 +125,18 @@ export const VitePay = ({
 
   // change QR when variables are changed
   useEffect(async () => {
-    setQR(`vite:${address}?tti=${tokenId}&amount=${amount}&data=${encode(memo)}`);
+    setQR(`vite:${address}?tti=${tokenId}&amount=${amount}&data=${encode(memo).replaceAll("=", "")}`);
   }, [address, tokenId, memo, amount]);
 
 
   // make sure if the transaction is valid or not. 
-  async function validatePayment(hashTx) {
-    var valid = true;
+  async function validatePayment(hashTx,memo,amount,tokenId) {
+    let valid = false;
     let divider = `10e-${hashTx.tokenInfo.decimals}`
     let amountTx = (new Big(`${hashTx.amount}`)).div(Big(divider));
 
-    if (hashTx.data !== memo) valid = false;
-    if (parseInt(amountTx) !== amount) valid = false;
-    if (hashTx.tokenId !== tokenId) valid = false;
+    if (hashTx.data == encode(memo) && parseInt(amountTx) == parseInt(amount) && hashTx.tokenId == tokenId) valid = true;
+
     return valid;
   }
 
