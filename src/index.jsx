@@ -1,24 +1,26 @@
 
-
+// imports from third party library
 import { QRCode } from 'react-qrcode-logo';
 import React from "react";
 import { useState, useEffect } from "react";
 import ReactModal from 'react-modal';
 import { encode, decode } from 'js-base64';
-
 import Big from 'big.js';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
+import { ViteAPI, accountBlock } from '@vite/vitejs';
+import { WS_RPC } from '@vite/vitejs-ws';
+import HTTP_RPC from '@vite/vitejs-http';
+const { createAccountBlock, utils } = accountBlock;
 
+//imports from components
 import { newOnroadBlocksByAddr, getTokenList, getHashInfo, getTransactionHistory } from './components/client';
 import ProgressBar from "./components/progressBar";
 import Transaction from "./components/transHistory";
 import TransactionForm from "./components/transForm";
 import { transactionStatus } from "./components/transactionStatus";
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
-import { ViteAPI, accountBlock } from '@vite/vitejs';
-import { WS_RPC } from '@vite/vitejs-ws';
-import HTTP_RPC from '@vite/vitejs-http';
+
 
 
 import styles from "./styles.module.css"
@@ -35,18 +37,22 @@ export const TransactionCheck = ({ nodeURL = "https://buidl.vite.net/gvite/http"
     let provider = new ViteAPI(httpRPC, () => {
       return
     });
-
-    const transactions = await getTransactionHistory(recipientAddress, provider);
-
-    for (var i = 0; i < transactions.length; i++) {
-      if (transactionStatus(transactions[i], amount, memo, tokenId)) {
-        setStatus(true);
-        break;
+    
+    let transactions = await getTransactionHistory(recipientAddress, provider);
+    transactions = transactions.filter(tx => tx.fromAddress !== tx.toAddress && tx.blockType == 4 );
+    if(transactions.length > 0){
+      for (var i = 0; i < transactions.length; i++) {
+        if (await transactionStatus(transactions[i], tokenId, memo, amount, provider)) {
+          setStatus(true);
+          break;
+        }
       }
     }
+
+   
   }, []);
 
-  return status && (<div>Transaction Found</div>);
+  return status === true ? ("Transaction Found") : ("Transaction Not Found");
 
 };
 
@@ -87,11 +93,8 @@ export const VitePay = ({
       const txInfo = await getHashInfo(hashAddress, provider);
       setTransaction(txInfo);
       onPaymentLogs(txInfo);
-
-      if (await validatePayment(txInfo, memo, amount, tokenId) && txInfo.receiveBlockHeight === null) {
-        setState(1);
-      }
-      else if (await validatePayment(txInfo, memo, amount, tokenId) && txInfo.receiveBlockHeight !== null) {
+      setState(1);
+      if (await validatePayment(txInfo, memo, amount, tokenId)) {
         setState(2);
         onPaymentSuccess(txInfo);
       }
@@ -133,9 +136,8 @@ export const VitePay = ({
     let valid = false;
     let divider = `1e+${hashTx.tokenInfo.decimals}`
     let amountTx = (new Big(`${hashTx.amount}`)).div(Big(divider));
-
+   
     if (hashTx.data == encode(memo) && parseInt(amountTx) == parseInt(amount) && hashTx.tokenId == tokenId) valid = true;
-
     return valid;
   }
 
@@ -148,7 +150,7 @@ export const VitePay = ({
     let statusTransaction = false;
     if (transactions.length > 0) {
       for (var i = 0; i < transactions.length; i++) {
-        if (await transactionStatus(transactions[i], tokenId, memo, amount)) {
+        if (await transactionStatus(transactions[i], tokenId, memo, amount, provider)) {
           statusTransaction = true;
           setTransaction(transactions[i]);
           setState(2);
