@@ -45,6 +45,7 @@ const App = () => {
       onPaymentSuccess={onTransactionSuccess}
       onPaymentFailure={onTransactionFailure}
       onPaymentLogs={paymentLogs}
+      httpURL="https://buidl.vite.net/gvite/http"
     />
 
     <TransactionCheck

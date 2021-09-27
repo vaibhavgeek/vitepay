@@ -60,6 +60,7 @@ export const VitePay = ({
   amountDefault = "0", tokenDefault = "tti_5649544520544f4b454e6e40",
   addressDefault = "vite_10a86218cf37c795ebbdf8a7da643d92e22d860d2b747e049e",
   nodeURL = "wss://buidl.vite.net/gvite/ws",
+  httpURL = "https://buidl.vite.net/gvite/http", 
   defaultMemo = "123abcd",
   paymentTimeout = "900",
   displayToken = true,
@@ -150,8 +151,11 @@ export const VitePay = ({
 
   async function checkStatus(e, tokenId, memo, amount) {
     e.preventDefault();
-    let WS_service = new WS_RPC(nodeURL);
-    let provider = new ViteAPI(WS_service);
+    
+    let httpRPC = new HTTP_RPC(httpURL);
+    let provider = new ViteAPI(httpRPC, () => {
+      return
+    });
 
     const transactions = await getTransactionHistory(address, provider);
     let statusTransaction = false;
@@ -184,7 +188,7 @@ export const VitePay = ({
             <TransactionForm checkStatus={checkStatus} displayAmount={displayAmount} displayMemo={displayMemo} displayToken={displayToken} address={address} setAddress={setAddress} memo={memo} setMemo={setMemo} tokenId={tokenId} setTokenId={setTokenId} amount={amount} setAmount={setAmount} options={options} />
           )}
           {(state === 2 || state === 3) && transaction && (
-            <Transaction transaction={transaction} />
+            <Transaction memo={memo} transaction={transaction} />
           )}
         </form>
 

@@ -3,7 +3,7 @@ import styles from "./../styles.module.css"
 import React from "react";
 import { encode, decode } from 'js-base64';
 
-const TransactionHistory = ({ transaction }) => {
+const TransactionHistory = ({ transaction , memo }) => {
     return (
         <div className={styles.form}>
             <label>
@@ -18,7 +18,7 @@ const TransactionHistory = ({ transaction }) => {
             </label>
 
             <label>
-                Memo: {decode(transaction.data)}
+                Memo: {memo}
 
             </label>
 
