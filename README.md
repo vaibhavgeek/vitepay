@@ -41,6 +41,7 @@ const App = () => {
       displayAmount={false}
       addressDefault="vite_10a86218cf37c795ebbdf8a7da643d92e22d860d2b747e049e"
       nodeURL="wss://buidl.vite.net/gvite/ws"
+      httpURL="https://buidl.vite.net/gvite/http"
       paymentTimeout="900"
       buttonStyle={{
         "color": "#FFF",
@@ -87,6 +88,7 @@ export default App
 | defaultToken | This is token id for default token, you can find the token id listed on VITE from https://vitescan.io/. It can later be changed from the dropdown by person making the payment  | tti_5649544520544f4b454e6e40 
 | defaultAmount | This is the default amount present in VITEPAY popup | 1 
 | nodeURL | This is the default websockets node url, the default one being, it is used to connect VITE Node. | wss://buidl.vite.net/gvite/ws
+| httpURL | This is default fallback of HTTP URL which is used in case websockets fail | https://buidl.vite.net/gvite/http
 | paymentTimeout | This is timer by which payment will get timed out. It is present in seconds | 900 
 | buttonStyle | Button style Object for "Pay with VITE" button | Example has the default button Class 
 | defaultMemo | Default Memo Present in Payment Popup | 123abcd
