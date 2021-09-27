@@ -2,7 +2,7 @@
 // imports from third party library
 import { QRCode } from 'react-qrcode-logo';
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import ReactModal from 'react-modal';
 import { encode, decode } from 'js-base64';
 import Big from 'big.js';
@@ -37,10 +37,10 @@ export const TransactionCheck = ({ nodeURL = "https://buidl.vite.net/gvite/http"
     let provider = new ViteAPI(httpRPC, () => {
       return
     });
-    
+
     let transactions = await getTransactionHistory(recipientAddress, provider);
-    transactions = transactions.filter(tx => tx.fromAddress !== tx.toAddress && tx.blockType == 4 );
-    if(transactions.length > 0){
+    transactions = transactions.filter(tx => tx.fromAddress !== tx.toAddress && tx.blockType == 4);
+    if (transactions.length > 0) {
       for (var i = 0; i < transactions.length; i++) {
         if (await transactionStatus(transactions[i], tokenId, memo, amount, provider)) {
           setStatus(true);
@@ -49,7 +49,7 @@ export const TransactionCheck = ({ nodeURL = "https://buidl.vite.net/gvite/http"
       }
     }
 
-   
+
   }, []);
 
   return status === true ? ("Transaction Found") : ("Transaction Not Found");
@@ -81,11 +81,18 @@ export const VitePay = ({
   const [timer, setTimer] = useState(parseInt(paymentTimeout));
   const [open, setOpen] = useState(false);
 
+  let WS_service = useRef(null);
+  let provider = useRef(null);
+
+  useEffect(() => {
+    WS_service = new WS_RPC(nodeURL);
+    provider = new ViteAPI(WS_service);
+  }, []);
+
+
   // Get account hash on payment
   useEffect(async () => {
-    let WS_service = new WS_RPC(nodeURL);
-    let provider = new ViteAPI(WS_service);
-
+    if (!provider) return;
     const event = await newOnroadBlocksByAddr(address, provider);
     event.on(async (result) => {
 
@@ -113,7 +120,7 @@ export const VitePay = ({
     });
     setOptions(token.tokenInfoList);
 
-  }, [memo]);
+  }, [memo, tokenId, amount]);
 
   useEffect(() => {
     if (timer > 0) {
@@ -136,7 +143,7 @@ export const VitePay = ({
     let valid = false;
     let divider = `1e+${hashTx.tokenInfo.decimals}`
     let amountTx = (new Big(`${hashTx.amount}`)).div(Big(divider));
-   
+
     if (hashTx.data == encode(memo) && parseInt(amountTx) == parseInt(amount) && hashTx.tokenId == tokenId) valid = true;
     return valid;
   }
