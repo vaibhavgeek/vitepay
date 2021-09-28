@@ -3,21 +3,6 @@ import styles from "./../styles.module.css"
 import { encode, decode } from 'js-base64';
 import { getTransactionHistory } from './client';
 
-
-// async function getMemo(request, response, tokenId, memo, amount){
-//     let validated = false;
-//     let divider = `1e+${request.tokenInfo.decimals}`
-//     let amountTxRequest = (new Big(`${request.amount}`)).div(Big(divider));
-//     let amountTxResponse = (new Big(`${response.amount}`)).div(Big(divider));
-
-//     let tokenIdRequest = request.tokenId;
-//     let tokendIdResponse = response.tokenId;
-
-//     if(amountTxRequest === amountTxResponse && tokenIdRequest === tokendIdResponse && request.data == encode(memo)) validated = true;
-//     return validated;
-
-// }
-
 async function transactionStatus(transaction, tokenId, memo, amount, provider) {
 
     
