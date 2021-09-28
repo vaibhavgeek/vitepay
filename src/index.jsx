@@ -174,7 +174,7 @@ export const VitePay = ({
 
     const transactions = await getTransactionHistory(address, provider);
     let statusTransaction = false;
-    if (transactions.length > 0) {
+    if (transactions !== null && transactions.length > 0) {
       for (var i = 0; i < transactions.length; i++) {
         if (await transactionStatus(transactions[i], tokenId, memo, amount, provider)) {
           statusTransaction = true;
