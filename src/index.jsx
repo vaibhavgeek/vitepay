@@ -73,21 +73,22 @@ export const VitePay = ({
 
   const [address, setAddress] = useState(addressDefault);
   const [tokenId, setTokenId] = useState(tokenDefault);
-  const [memo, setMemo] = useState(defaultMemo);
+  const inputMemo = useRef(defaultMemo);
   const [amount, setAmount] = useState(amountDefault);
   const [options, setOptions] = useState([]);
-  const [qr, setQR] = useState(`vite:${address}?tti=${tokenId}&amount=${amount}&data=${encode(memo).replaceAll("=", "")}`);
+  const [qr, setQR] = useState(`vite:${address}?tti=${tokenId}&amount=${amount}&data=${encode(inputMemo.current).replaceAll("=", "")}`);
   const [state, setState] = useState(0);
   const [transaction, setTransaction] = useState(null);
   const [timer, setTimer] = useState(parseInt(paymentTimeout));
   const [open, setOpen] = useState(false);
-
+  
+  
   const [provider, setProvider] = useState(null);
- 
+
   useEffect(async () => {
-     let WS_service =  new WS_RPC(nodeURL);
-     let provider = new ViteAPI(WS_service);
-     setProvider(provider);
+    let WS_service = new WS_RPC(nodeURL);
+    let provider = new ViteAPI(WS_service);
+    setProvider(provider);
     // set dropdown from the getToken
     const token = await getTokenList(provider);
 
@@ -96,48 +97,62 @@ export const VitePay = ({
       value.key = index;
     });
     setOptions(token.tokenInfoList);
-    
+
     const event = await newOnroadBlocksByAddr(address, provider);
     event.on(async (result) => {
+      debugger
       const hashAddress = result[0].hash;
       const txInfo = await getHashInfo(hashAddress, provider);
       setTransaction(txInfo);
       onPaymentLogs(txInfo);
-      setState(1);
-      if (await validatePayment(txInfo, memo, amount, tokenId)) {
-        setState(2);
-        onPaymentSuccess(txInfo);
-      }
-      else if (timer < 3) {
-        setState(3);
-        onPaymentFailure(txInfo);
-      }
+      //setState(1);
+      alert(inputMemo.current.value);
+      // if (await validatePayment(txInfo, memo, amount, tokenId)) {
+      //   setState(2);
+      //   onPaymentSuccess(txInfo);
+      // }
+      // else if (timer < 3) {
+      //   setState(3);
+      //   onPaymentFailure(txInfo);
+      // }
+      // provider.unsubscribe(event);
     });
+    window.addEventListener('keydown', handleKeyDown);
+
+    // cleanup this component
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+
   }, []);
 
 
   // Get account hash on payment
-  useEffect(async () => {
-    if(!provider) return;
-    
-    const event = await newOnroadBlocksByAddr(address, provider);
-    event.on(async (result) => {
+  // useEffect(async () => {
+  //   if (!provider) return;
+  //   console.log("memo changed: ",memo);
+  //   const event = await newOnroadBlocksByAddr(address, provider);
+  //   //  event.on(async (result) => {
+  //   //   debugger
+  //   //    const hashAddress = result[0].hash;
+  //   //    const txInfo = await getHashInfo(hashAddress, provider);
+  //   //    setTransaction(txInfo);
+  //   //    onPaymentLogs(txInfo);
+  //   //    setState(1);
+  //   //    if (await validatePayment(txInfo, memo, amount, tokenId)) {
+  //   //      setState(2);
+  //   //      onPaymentSuccess(txInfo);
+  //   //    }
+  //   //    else if (timer < 3) {
+  //   //      setState(3);
+  //   //      onPaymentFailure(txInfo);
+  //   //    }
+      
+  //   //  });
+     
 
-      const hashAddress = result[0].hash;
-      const txInfo = await getHashInfo(hashAddress, provider);
-      setTransaction(txInfo);
-      onPaymentLogs(txInfo);
-      setState(1);
-      if (await validatePayment(txInfo, memo, amount, tokenId)) {
-        setState(2);
-        onPaymentSuccess(txInfo);
-      }
-      else if (timer < 3) {
-        setState(3);
-        onPaymentFailure(txInfo);
-      }
-    });
-  }, [memo, tokenId, amount]);
+
+  // }, [memo, tokenId, amount]);
 
   useEffect(() => {
     if (timer > 0) {
@@ -150,8 +165,8 @@ export const VitePay = ({
 
   // change QR when variables are changed
   useEffect(async () => {
-    setQR(`vite:${address}?tti=${tokenId}&amount=${amount}&data=${encode(memo).replaceAll("=", "")}`);
-  }, [address, tokenId, memo, amount]);
+    setQR(`vite:${address}?tti=${tokenId}&amount=${amount}&data=${encode(inputMemo.current).replaceAll("=", "")}`);
+  }, [address, tokenId, inputMemo.current.value , amount]);
 
 
   // make sure if the transaction is valid or not. 
@@ -159,8 +174,13 @@ export const VitePay = ({
     let valid = false;
     let divider = `1e+${hashTx.tokenInfo.decimals}`
     let amountTx = (new Big(`${hashTx.amount}`)).div(Big(divider));
-
-    if (hashTx.data == encode(memo) && parseInt(amountTx) == parseInt(amount) && hashTx.tokenId == tokenId) valid = true;
+    console.log(encode(inputMemo.current));
+    console.log(hashTx.data);
+    console.log(amountTx);
+    console.log(amount);
+    console.log(hashTx.tokenId);
+    console.log(tokenId);
+    if (hashTx.data == encode(inputMemo.current) && parseInt(amountTx) == parseInt(amount) && hashTx.tokenId == tokenId) valid = true;
     return valid;
   }
 
@@ -200,7 +220,7 @@ export const VitePay = ({
           <QRCode size="200" className={styles.qrCode} logoImage="/vitelabs-removebg.jpg" value={qr} />
           <ProgressBar state={state} />
           {state === 0 && (
-            <TransactionForm checkStatus={checkStatus} displayAmount={displayAmount} displayMemo={displayMemo} displayToken={displayToken} address={address} setAddress={setAddress} memo={memo} setMemo={setMemo} tokenId={tokenId} setTokenId={setTokenId} amount={amount} setAmount={setAmount} options={options} />
+            <TransactionForm checkStatus={checkStatus} displayAmount={displayAmount} displayMemo={displayMemo} displayToken={displayToken} address={address} setAddress={setAddress} inputMemo={inputMemo} tokenId={tokenId} setTokenId={setTokenId} amount={amount} setAmount={setAmount} options={options} />
           )}
           {(state === 2 || state === 3) && transaction && (
             <Transaction memo={memo} transaction={transaction} />

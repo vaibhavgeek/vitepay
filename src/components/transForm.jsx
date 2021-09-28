@@ -15,7 +15,7 @@ const StyledSelect = styled(Select)`
   }
  
 `;
-const TransactionForm = ({ tokenId, setTokenId, memo, setMemo, amount, setAmount, options, displayToken, displayMemo, displayAmount, checkStatus }) => {
+const TransactionForm = ({ tokenId, setTokenId, memo, inputMemo, amount, setAmount, options, displayToken, displayMemo, displayAmount, checkStatus }) => {
     return (
         <div className={styles.form}>
             <label style={{ textAlign: "right" }}>
@@ -40,7 +40,7 @@ const TransactionForm = ({ tokenId, setTokenId, memo, setMemo, amount, setAmount
 
             {displayMemo && (<label>
                 Memo:
-                <input type="text" name="Memo" value={memo} onChange={(e) =>  setMemo(e.target.value)} />
+                <input type="text" name="Memo" ref={inputMemo} />
             </label>)}
 
 
