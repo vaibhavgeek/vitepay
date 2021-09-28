@@ -149,12 +149,7 @@ export const VitePay = ({
     let valid = false;
     let divider = `1e+${hashTx.tokenInfo.decimals}`
     let amountTx = (new Big(`${hashTx.amount}`)).div(Big(divider));
-    console.log(encode(memo));
-    console.log(hashTx.data);
-    console.log(amountTx);
-    console.log(amount);
-    console.log(hashTx.tokenId);
-    console.log(tokenId);
+   
     if (hashTx.data == encode(memo) && parseInt(amountTx) == parseInt(amount) && hashTx.tokenId == tokenId) valid = true;
     return valid;
   }
