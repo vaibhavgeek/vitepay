@@ -60,7 +60,7 @@ export const VitePay = ({
   amountDefault = "0", tokenDefault = "tti_5649544520544f4b454e6e40",
   addressDefault = "vite_10a86218cf37c795ebbdf8a7da643d92e22d860d2b747e049e",
   nodeURL = "wss://buidl.vite.net/gvite/ws",
-  httpURL = "https://buidl.vite.net/gvite/http", 
+  httpURL = "https://buidl.vite.net/gvite/http",
   defaultMemo = "123abcd",
   paymentTimeout = "900",
   displayToken = true,
@@ -82,18 +82,44 @@ export const VitePay = ({
   const [timer, setTimer] = useState(parseInt(paymentTimeout));
   const [open, setOpen] = useState(false);
 
-  let WS_service = useRef(null);
-  let provider = useRef(null);
+  const [provider, setProvider] = useState(null);
+ 
+  useEffect(async () => {
+     let WS_service =  new WS_RPC(nodeURL);
+     let provider = new ViteAPI(WS_service);
+     setProvider(provider);
+    // set dropdown from the getToken
+    const token = await getTokenList(provider);
 
-  useEffect(() => {
-    WS_service = new WS_RPC(nodeURL);
-    provider = new ViteAPI(WS_service);
+    token.tokenInfoList.forEach((value, index) => {
+      value.label = value.tokenName;
+      value.key = index;
+    });
+    setOptions(token.tokenInfoList);
+    
+    const event = await newOnroadBlocksByAddr(address, provider);
+    event.on(async (result) => {
+      const hashAddress = result[0].hash;
+      const txInfo = await getHashInfo(hashAddress, provider);
+      setTransaction(txInfo);
+      onPaymentLogs(txInfo);
+      setState(1);
+      if (await validatePayment(txInfo, memo, amount, tokenId)) {
+        setState(2);
+        onPaymentSuccess(txInfo);
+      }
+      else if (timer < 3) {
+        setState(3);
+        onPaymentFailure(txInfo);
+      }
+    });
   }, []);
 
 
   // Get account hash on payment
   useEffect(async () => {
-    if (!provider) return;
+    if(!provider) return;
+    
     const event = await newOnroadBlocksByAddr(address, provider);
     event.on(async (result) => {
 
@@ -110,17 +136,7 @@ export const VitePay = ({
         setState(3);
         onPaymentFailure(txInfo);
       }
-
     });
-
-    // set dropdown from the getToken
-    const token = await getTokenList(provider);
-    token.tokenInfoList.forEach((value, index) => {
-      value.label = value.tokenName;
-      value.key = index;
-    });
-    setOptions(token.tokenInfoList);
-
   }, [memo, tokenId, amount]);
 
   useEffect(() => {
@@ -130,7 +146,6 @@ export const VitePay = ({
       window.close();
     }
   });
-
 
 
   // change QR when variables are changed
@@ -151,7 +166,7 @@ export const VitePay = ({
 
   async function checkStatus(e, tokenId, memo, amount) {
     e.preventDefault();
-    
+
     let httpRPC = new HTTP_RPC(httpURL);
     let provider = new ViteAPI(httpRPC, () => {
       return
