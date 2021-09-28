@@ -15,7 +15,7 @@ const StyledSelect = styled(Select)`
   }
  
 `;
-const TransactionForm = ({ tokenId, setTokenId, memo, inputMemo, amount, setAmount, options, displayToken, displayMemo, displayAmount, checkStatus }) => {
+const TransactionForm = ({inputMemo, inputToken, inputAmount, tokenId, setTokenId, memo, setMemo, amount, setAmount, options, displayToken, displayMemo, displayAmount, checkStatus }) => {
     return (
         <div className={styles.form}>
             <label style={{ textAlign: "right" }}>
@@ -32,6 +32,7 @@ const TransactionForm = ({ tokenId, setTokenId, memo, inputMemo, amount, setAmou
                         clearOnSelect={true}
                         options={options}
                         values={[options.find(opt => opt.tokenId === tokenId)]}
+                        ref={inputToken}
                         onChange={(e) => { setTokenId(e[0]?.tokenId); }}
                     />
                 ) : <p>Loading ....</p>}
@@ -40,14 +41,14 @@ const TransactionForm = ({ tokenId, setTokenId, memo, inputMemo, amount, setAmou
 
             {displayMemo && (<label>
                 Memo:
-                <input type="text" name="Memo" ref={inputMemo} />
+                <input type="text" name="Memo" ref={inputMemo} defaultValue={memo} onChange={(e) => setMemo(e.target.value)} />
             </label>)}
 
 
             {displayAmount && (
                 <label>
                     Amount:
-                    <input type="text" name="Amount" type="number" value={amount} onChange={(e) => setAmount(e.target.value)} />
+                    <input type="text" name="Amount" type="number" ref={inputAmount} defaultValue={amount} onChange={(e) => setAmount(e.target.value)} />
                 </label>
             )}
 
