@@ -105,9 +105,9 @@ export const VitePay = ({
       const hashAddress = result[0].hash;
       const txInfo = await getHashInfo(hashAddress, provider);
       
-      let memoScoped = displayMemo ? inputMemo.current.value : inputMemo.current;
-      let amountScoped = displayAmount ? inputAmount.current.value : inputAmount.current;
-      let tokenScoped = displayToken ? inputToken.current.props.values[0].tokenId : inputToken.current;
+      let memoScoped = displayMemo ? inputMemo?.current?.value : inputMemo?.current;
+      let amountScoped = displayAmount ? inputAmount?.current?.value : inputAmount?.current;
+      let tokenScoped = displayToken ? inputToken?.current?.props?.values[0]?.tokenId : inputToken?.current;
 
       if (inputMemo.current && inputAmount.current && inputToken.current) {
         if (await validatePayment(txInfo, memoScoped, amountScoped, tokenScoped)) {
