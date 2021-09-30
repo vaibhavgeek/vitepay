@@ -36,8 +36,8 @@ const App = () => {
       amountDefault="250"
       tokenDefault="tti_5649544520544f4b454e6e40"
       defaultMemo="123abcd"
-      displayToken={true}
-      displayMemo={true}
+      displayToken={false}
+      displayMemo={false}
       displayAmount={false}
       addressDefault="vite_10a86218cf37c795ebbdf8a7da643d92e22d860d2b747e049e"
       nodeURL="wss://buidl.vite.net/gvite/ws"

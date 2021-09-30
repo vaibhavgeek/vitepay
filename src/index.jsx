@@ -110,6 +110,11 @@ export const VitePay = ({
       let memoScoped = displayMemo ? inputMemo?.current?.value : inputMemo?.current;
       let amountScoped = displayAmount ? inputAmount?.current?.value : inputAmount?.current;
       let tokenScoped = displayToken ? inputToken?.current?.props?.values[0]?.tokenId : inputToken?.current;
+      
+      console.log('InuptMemo: ' + inputMemo?.current)
+      console.log('InuptMemo Value: ' + inputMemo?.current?.value)
+      console.log('InuptAmount: ' + inputAmount?.current)
+      console.log('InuptAmount Value: ' + inputAmount?.current?.value)
 
       if (inputMemo.current && inputAmount.current && inputToken.current) {
         if (await validatePayment(txInfo, memoScoped, amountScoped, tokenScoped)) {
@@ -152,7 +157,7 @@ export const VitePay = ({
     let divider = `1e+${hashTx.tokenInfo.decimals}`
     let amountTx = (new Big(`${hashTx.amount}`)).div(Big(divider));
     if(hashTx.data === null) return;  
-    if (hashTx.data == encode(memo) && parseInt(amountTx) == parseInt(amount) && hashTx.tokenId == tokenId && (hashTx.timestamp > new Date().getTime() / 1000 - 3600 * 24)) valid = true;
+    if (hashTx.data == encode(memo) && parseInt(amountTx) == parseInt(amount) && hashTx.tokenId == tokenId) valid = true;
     return valid;
   }
 

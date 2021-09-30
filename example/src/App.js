@@ -20,14 +20,14 @@ const App = () => {
   return (<div>
 
     <VitePay
-      amountDefault="250"
+      amountDefault="2"
       tokenDefault="tti_5649544520544f4b454e6e40"
       defaultMemo="123abcd"
       displayToken={true}
       displayMemo={true}
-      displayAmount={false}
+      displayAmount={true}
       addressDefault="vite_10a86218cf37c795ebbdf8a7da643d92e22d860d2b747e049e"
-      nodeURL="wss://buidl.vite.net/gvite/ws"
+      nodeURL="ws://139.199.76.167:41420"
       paymentTimeout="900"
       buttonStyle={{
         "color": "#FFF",
@@ -45,14 +45,14 @@ const App = () => {
       onPaymentSuccess={onTransactionSuccess}
       onPaymentFailure={onTransactionFailure}
       onPaymentLogs={paymentLogs}
-      httpURL="https://buidl.vite.net/gvite/http"
+      httpURL="http://139.199.76.167:48132"
       checkPreviousTransactionsCount={500}
     />
 
     <TransactionCheck
-      nodeURL="https://buidl.vite.net/gvite/http"
+      nodeURL="http://139.199.76.167:48132"
       recipientAddress="vite_10a86218cf37c795ebbdf8a7da643d92e22d860d2b747e049e"
-      amount="250"
+      amount="2"
       tokenId="tti_5649544520544f4b454e6e40"
       memo="123abcd"
       checkPreviousTransactionsCount={500}
