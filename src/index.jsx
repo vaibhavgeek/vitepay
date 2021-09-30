@@ -35,7 +35,7 @@ export const TransactionCheck = ({ nodeURL = "https://buidl.vite.net/gvite/http"
     });
 
     let transactions = await getTransactionHistory(recipientAddress, provider);
-    transactions = transactions.filter(tx => tx.fromAddress !== tx.toAddress && tx.blockType == 4);
+    transactions = transactions.filter(tx => tx.fromAddress !== tx.toAddress && tx.blockType == 4 && (tx.timestamp > new Date().getTime() / 1000 - 3600 * 24));
     if (transactions !== null && transactions.length > 0) {
       for (var i = 0; i < transactions.length; i++) {
         if (await transactionStatus(transactions[i], tokenId, memo, amount, provider)) {
@@ -133,7 +133,7 @@ export const VitePay = ({
     if (timer > 0) {
       setTimeout(() => setTimer(timer - 1), 1000);
     } else {
-      window.close();
+      setState(-1);
     }
   });
 
@@ -149,7 +149,7 @@ export const VitePay = ({
     let valid = false;
     let divider = `1e+${hashTx.tokenInfo.decimals}`
     let amountTx = (new Big(`${hashTx.amount}`)).div(Big(divider));
-   
+    if(hashTx.data === null) return;  
     if (hashTx.data == encode(memo) && parseInt(amountTx) == parseInt(amount) && hashTx.tokenId == tokenId) valid = true;
     return valid;
   }
@@ -186,7 +186,9 @@ export const VitePay = ({
 
         <form className={styles.vitepay}>
 
-          {state === 0 ? <p>The transaction will expire in {Math.floor(timer / 60)}{":"}{timer - Math.floor(timer / 60) * 60}</p> : <p>Transaction is Complete</p>}
+          {state === 0 && <p>The transaction will expire in {Math.floor(timer / 60)}{":"}{timer - Math.floor(timer / 60) * 60}</p>}
+          {(state === 1  || state === 2) && <p>Transaction is Complete</p>}
+          {state === -1 && <p>Transaction has failed</p>}
           <QRCode size="200" className={styles.qrCode} logoImage="/vitelabs-removebg.jpg" value={qr} />
           <ProgressBar state={state} />
           {state === 0 && (
