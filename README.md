@@ -33,7 +33,7 @@ const App = () => {
   return (<div>
 
     <VitePay
-      amountDefault="1"
+      amountDefault="250"
       tokenDefault="tti_5649544520544f4b454e6e40"
       defaultMemo="123abcd"
       displayToken={true}
@@ -41,7 +41,6 @@ const App = () => {
       displayAmount={false}
       addressDefault="vite_10a86218cf37c795ebbdf8a7da643d92e22d860d2b747e049e"
       nodeURL="wss://buidl.vite.net/gvite/ws"
-      httpURL="https://buidl.vite.net/gvite/http"
       paymentTimeout="900"
       buttonStyle={{
         "color": "#FFF",
@@ -59,18 +58,23 @@ const App = () => {
       onPaymentSuccess={onTransactionSuccess}
       onPaymentFailure={onTransactionFailure}
       onPaymentLogs={paymentLogs}
+      httpURL="https://buidl.vite.net/gvite/http"
+      checkPreviousTransactionsCount={500}
     />
 
     <TransactionCheck
       nodeURL="https://buidl.vite.net/gvite/http"
       recipientAddress="vite_10a86218cf37c795ebbdf8a7da643d92e22d860d2b747e049e"
-      amount="1"
+      amount="250"
       tokenId="tti_5649544520544f4b454e6e40"
+      memo="123abcd"
+      checkPreviousTransactionsCount={500}
     ></TransactionCheck>
   </div>)
 }
 
 export default App
+
 
 
 
@@ -95,7 +99,7 @@ export default App
 | displayToken | Show Token Dropdown in form popup. In case of false, default values will be used.  | `true`
 | displayAmount | Show Amount Input in form popup. In case of false, default values will be used.  | `true`
 | displayMemo | Show Memo Input in form popup. In case of false, default values will be used. | `true`
-
+| checkPreviousTransactionsCount | The number of transasctions it checks for your account to match the one recieving. Increase if high number of transactions on your website.  | 500 
 ## Callback Hooks 
 | Function | Description 
 | --------  | ----------- 
