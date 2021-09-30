@@ -35,7 +35,7 @@ export const TransactionCheck = ({ nodeURL = "https://buidl.vite.net/gvite/http"
     });
 
     let transactions = await getTransactionHistory(recipientAddress, provider);
-    transactions = transactions.filter(tx => tx.fromAddress !== tx.toAddress && tx.blockType == 4 && (tx.timestamp > new Date().getTime() / 1000 - 3600 * 24));
+    transactions = transactions.filter(tx => tx.fromAddress !== tx.toAddress && tx.blockType == 4);
     if (transactions !== null && transactions.length > 0) {
       for (var i = 0; i < transactions.length; i++) {
         if (await transactionStatus(transactions[i], tokenId, memo, amount, provider)) {
@@ -115,7 +115,7 @@ export const VitePay = ({
           onPaymentSuccess(txInfo);
         }
         else if (timer < 3) {
-          setState(3);
+          setState(-1);
           onPaymentFailure(txInfo);
         }
         else {
@@ -150,7 +150,7 @@ export const VitePay = ({
     let divider = `1e+${hashTx.tokenInfo.decimals}`
     let amountTx = (new Big(`${hashTx.amount}`)).div(Big(divider));
     if(hashTx.data === null) return;  
-    if (hashTx.data == encode(memo) && parseInt(amountTx) == parseInt(amount) && hashTx.tokenId == tokenId) valid = true;
+    if (hashTx.data == encode(memo) && parseInt(amountTx) == parseInt(amount) && hashTx.tokenId == tokenId && (hashTx.timestamp > new Date().getTime() / 1000 - 3600 * 24)) valid = true;
     return valid;
   }
 
@@ -162,7 +162,8 @@ export const VitePay = ({
       return
     });
 
-    const transactions = await getTransactionHistory(address, provider);
+    let transactions = await getTransactionHistory(address, provider);
+    transactions = transactions.filter(tx => tx.fromAddress !== tx.toAddress && tx.blockType == 4);
     let statusTransaction = false;
     if (transactions !== null && transactions.length > 0) {
       for (var i = 0; i < transactions.length; i++) {
@@ -194,7 +195,7 @@ export const VitePay = ({
           {state === 0 && (
             <TransactionForm inputMemo={inputMemo} inputAmount={inputAmount} inputToken={inputToken} checkStatus={checkStatus} displayAmount={displayAmount} displayMemo={displayMemo} displayToken={displayToken} memo={memo} setMemo={setMemo} address={address} setAddress={setAddress} tokenId={tokenId} setTokenId={setTokenId} amount={amount} setAmount={setAmount} options={options} />
           )}
-          {(state === 2 || state === 3) && transaction && (
+          {(state === 2) && transaction && (
             <Transaction memo={memo} transaction={transaction} />
           )}
         </form>

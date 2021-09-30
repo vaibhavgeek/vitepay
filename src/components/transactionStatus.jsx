@@ -1,7 +1,7 @@
 import Big from 'big.js';
 import styles from "./../styles.module.css"
 import { encode, decode } from 'js-base64';
-import { getTransactionHistory } from './client';
+import { getHashInfo } from './client';
 
 async function transactionStatus(transaction, tokenId, memo, amount, provider) {
         let validated = false;
