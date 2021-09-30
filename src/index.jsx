@@ -157,7 +157,7 @@ export const VitePay = ({
     let divider = `1e+${hashTx.tokenInfo.decimals}`
     let amountTx = (new Big(`${hashTx.amount}`)).div(Big(divider));
     if(hashTx.data === null) return;  
-    if (hashTx.data == encode(memo) && parseInt(amountTx) == parseInt(amount) && hashTx.tokenId == tokenId) valid = true;
+    if (hashTx.data == encode(memo) && parseInt(amountTx) == parseInt(amount) && hashTx.tokenId == tokenId && hashTx.timestamp > (new Date().getTime()/1000 - paymentTimeout)) valid = true;
     return valid;
   }
 
