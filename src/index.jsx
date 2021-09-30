@@ -24,7 +24,8 @@ export const TransactionCheck = ({ nodeURL = "https://buidl.vite.net/gvite/http"
   recipientAddress,
   amount,
   memo,
-  tokenId }) => {
+  tokenId,
+  checkPreviousTransactionsCount = 100 }) => {
 
   const [status, setStatus] = useState(false);
 
@@ -34,7 +35,7 @@ export const TransactionCheck = ({ nodeURL = "https://buidl.vite.net/gvite/http"
       return
     });
 
-    let transactions = await getTransactionHistory(recipientAddress, provider);
+    let transactions = await getTransactionHistory(recipientAddress, provider, checkPreviousTransactionsCount);
     transactions = transactions.filter(tx => tx.fromAddress !== tx.toAddress && tx.blockType == 4);
     if (transactions !== null && transactions.length > 0) {
       for (var i = 0; i < transactions.length; i++) {
@@ -61,6 +62,7 @@ export const VitePay = ({
   displayToken = true,
   displayMemo = true,
   displayAmount = true,
+  checkPreviousTransactionsCount=500,
   buttonStyle,
   onPaymentSuccess,
   onPaymentFailure,
@@ -162,7 +164,7 @@ export const VitePay = ({
       return
     });
 
-    let transactions = await getTransactionHistory(address, provider);
+    let transactions = await getTransactionHistory(address, provider, checkPreviousTransactionsCount);
     transactions = transactions.filter(tx => tx.fromAddress !== tx.toAddress && tx.blockType == 4);
     let statusTransaction = false;
     if (transactions !== null && transactions.length > 0) {

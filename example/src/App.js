@@ -46,6 +46,7 @@ const App = () => {
       onPaymentFailure={onTransactionFailure}
       onPaymentLogs={paymentLogs}
       httpURL="https://buidl.vite.net/gvite/http"
+      checkPreviousTransactionsCount={500}
     />
 
     <TransactionCheck
@@ -54,6 +55,7 @@ const App = () => {
       amount="250"
       tokenId="tti_5649544520544f4b454e6e40"
       memo="123abcd"
+      checkPreviousTransactionsCount={500}
     ></TransactionCheck>
   </div>)
 }

@@ -13,8 +13,8 @@ async function getTokenList(provider) {
     return result;
 }
 
-async function getTransactionHistory(address, provider){
-    const result = await provider.request("ledger_getBlocksByAccAddr", address, 0 , 100);
+async function getTransactionHistory(address, provider, count){
+    const result = await provider.request("ledger_getBlocksByAccAddr", address, 0 , count);
     return result;
 }
 export { newOnroadBlocksByAddr, getTokenList, getHashInfo, getTransactionHistory };
