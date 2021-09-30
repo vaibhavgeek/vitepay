@@ -15,9 +15,9 @@ const StyledSelect = styled(Select)`
   }
  
 `;
-const TransactionForm = ({inputMemo, inputToken, inputAmount, tokenId, setTokenId, memo, setMemo, amount, setAmount, options, displayToken, displayMemo, displayAmount, checkStatus }) => {
+const TransactionForm = ({state, inputMemo, inputToken, inputAmount, tokenId, setTokenId, memo, setMemo, amount, setAmount, options, displayToken, displayMemo, displayAmount, checkStatus }) => {
     return (
-        <div className={styles.form}>
+        <div className={styles.form} style = {{display: state === 0 ? 'block' : 'none'}}>
             <label style={{ textAlign: "right" }}>
                 Refresh Status: <button onClick={(e) => checkStatus(e,tokenId, memo, amount)}>
                     <FontAwesomeIcon size="x" icon={faSync} /></button>
