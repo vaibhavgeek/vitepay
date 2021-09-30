@@ -199,7 +199,7 @@ export const VitePay = ({
           {state === -1 && <p>Transaction has failed</p>}
           <QRCode size="200" className={styles.qrCode} logoImage="/vitelabs-removebg.jpg" value={qr} />
           <ProgressBar state={state} />
-          {state === 0 && (
+          {(state === 0  || state === 1) && (
             <TransactionForm inputMemo={inputMemo} inputAmount={inputAmount} inputToken={inputToken} checkStatus={checkStatus} displayAmount={displayAmount} displayMemo={displayMemo} displayToken={displayToken} memo={memo} setMemo={setMemo} address={address} setAddress={setAddress} tokenId={tokenId} setTokenId={setTokenId} amount={amount} setAmount={setAmount} options={options} />
           )}
           {(state === 2) && transaction && (
