@@ -111,11 +111,7 @@ export const VitePay = ({
       let amountScoped = displayAmount ? inputAmount?.current?.value : inputAmount?.current;
       let tokenScoped = displayToken ? inputToken?.current?.props?.values[0]?.tokenId : inputToken?.current;
       
-      console.log('InuptMemo: ' + inputMemo?.current)
-      console.log('InuptMemo Value: ' + inputMemo?.current?.value)
-      console.log('InuptAmount: ' + inputAmount?.current)
-      console.log('InuptAmount Value: ' + inputAmount?.current?.value)
-
+    
       if (inputMemo.current && inputAmount.current && inputToken.current) {
         if (await validatePayment(txInfo, memoScoped, amountScoped, tokenScoped)) {
           setState(2);
